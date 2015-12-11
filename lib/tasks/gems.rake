@@ -2,6 +2,35 @@ require "rubygems/package"
 require "progress_bar"
 
 namespace :gems do
+  desc "Mirror gems from rubygems.org"
+  task :mirror do
+    Bundler.with_clean_env do
+      Dir.chdir Rails.root.join("public") do
+        exec "ruby", "--disable-gems", "-I", Rails.root.join("vendor/gem/lib").to_s, "-r", "gem", "-e", "Gem.mirror"
+      end
+    end
+  end
+
+  desc "Create all indexes for all gems"
+  task :index do
+    Bundler.with_clean_env do
+      Dir.chdir Rails.root.join("public") do
+        exec "ruby", "--disable-gems", "-I", Rails.root.join("vendor/gem/lib").to_s, "-r", "gem", "-e", "Gem.index"
+      end
+    end
+  end
+
+  namespace :index do
+    desc "Create only quick indexes for all gems"
+    task :quick do
+      Bundler.with_clean_env do
+        Dir.chdir Rails.root.join("public") do
+          exec "ruby", "--disable-gems", "-I", Rails.root.join("vendor/gem/lib").to_s, "-r", "gem", "-e", "Gem.index_quick"
+        end
+      end
+    end
+  end
+
   desc "Seed gems into database"
   task seed: :environment do
     progress = nil

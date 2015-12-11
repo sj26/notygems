@@ -10,7 +10,7 @@ namespace :gems do
       progress = ProgressBar.new "Seeding gems", paths.length
     end.each do |name|
       begin
-        path = Rails.root.join("public", "gems", name)
+        path = Rails.root.join("public", "gems", name).to_s
         if spec = Gem::Package.new(path).spec
           project = Project.find_or_create_by!(name: spec.name.to_s)
           version = project.versions.find_or_create_by!(number: spec.version.to_s, platform: spec.platform.to_s) do |version|

@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resources :projects, path: :gems, only: [:index]
 
+  get :search, to: "projects#search"
+
   resources :versions, path: :gems, only: [:show], constraints: {id: Patterns::NONGREEDY_SLUG, format: /html|json|gem|gemspec/} do
     member do
       get :other

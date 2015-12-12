@@ -1,0 +1,19 @@
+section.page
+  h2 Search Results
+
+  - if project = @exact_project
+    h3 Exact Match
+
+    ul: li: #{link_to project, project.latest_version} (#{project.latest_version.number})
+
+    h3 All Results
+
+  - if @projects.exists?
+    ul
+      - @projects.each do |project|
+        li: #{link_to project, project.latest_version} (#{project.latest_version.number})
+
+    = paginate @projects
+
+  - else
+    p Nothing found matching <code>#{params[:query]}</code>.

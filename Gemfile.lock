@@ -50,6 +50,7 @@ GEM
       execjs
     coffee-script-source (1.7.0)
     creole (0.5.0)
+    dotenv (2.0.2)
     erubis (2.7.0)
     escape_utils (1.0.1)
     execjs (2.0.2)
@@ -158,6 +159,7 @@ DEPENDENCIES
   bootstrap-sass
   coffee-rails
   creole
+  dotenv
   github-linguist!
   github-markdown
   github-markup

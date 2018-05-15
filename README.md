@@ -1,25 +1,11 @@
-# Rubygems Mirror
+# Not-quite Rubygems
 
-Created at [Railscamp XV](http://bne15.railscamps.org/) to aid gem discovery while offline.
+Just enough Rubygems to gem install quickly.
 
-## Features
+## Updating the mirror
 
-* Instructional home page
-* Gem specification extraction (/gems/rails-4.1.1.gemspec)
-* Gem listing
-* Gem version browsing
-* Gem description pages
-* Gem package file browsing
-  * Markup rendering
-  * Code highlighting
+Try:
 
-## Todo
-
-* Gem search
-* Gem documentation generation and view
-* Gem documentation search
-* Rake tasks for mirroring
-* Mirroring on demand?
-* Rake tasks for indexing
-* Fallback quick indexing on demand?
-* Dependency API
+```
+bin/mirror
+```

@@ -1,0 +1,52 @@
+#!/usr/bin/env ruby
+
+# Downloads spec lists from rubygems.org, then downloads each gem listed.
+#
+# Uses aria2c as a downloader because it's a fast downloader (much faster than
+# anything Ruby), we can open a peristent process with a pipe to feed it new
+# urls to download, and it will conditionally get over several connections.
+#
+
+require "zlib"
+
+def gem_filename_for(name, version, platform=Gem::Platform::RUBY)
+  if platform.nil? || platform == Gem::Platform::RUBY
+    "#{name}-#{version}.gem"
+  else
+    "#{name}-#{version}-#{platform}.gem"
+  end
+end
+
+source = "https://rubygems.org"
+
+Dir.chdir(File.join(__dir__, "..", "public")) do
+  # Prioritised list of specs files:
+  #
+  # 1. latest_specs -- latest versions of every gem
+  # 2. specs -- every non-prerelease version of every gem
+  # 3. prerelease_specs -- every prerelease version of every gem
+  #
+  ["latest_specs", "specs", "prerelease_specs"].tap do |specs_files|
+    # Update specs files
+    system "wget", "-N", *specs_files.map { |file| "#{source}/#{file}.4.8.gz" }
+  end.lazy.flat_map do |spec_file|
+    # Load spec files into a prioritised, flattened list of (name, version, platform) tuples
+    Marshal.load(Zlib.gunzip(File.binread("#{spec_file}.4.8.gz")))
+  end.lazy.map do |(gem_name, gem_version, gem_platform)|
+    # Translate into gem package filenames
+    gem_filename_for(gem_name, gem_version, gem_platform)
+  end.lazy.reject do |gem_filename|
+    # Skip already-downloaded gems early
+    File.exist?("gems/#{gem_filename}").tap do |reject|
+      if reject
+        puts gem_filename, "  already downloaded"
+      else
+        puts gem_filename, "  downloading"
+      end
+    end
+  end.lazy.each.with_object(IO.popen(["aria2c", "--force-sequential", "--max-concurrent-downloads=5", "--max-connection-per-server=5", "--continue", "--dir=gems", "--remote-time", "--conditional-get", "--allow-overwrite", "--deferred-input", "--input-file=-"], "w")) do |gem_filename, aria2c_io|
+    # Download into gems/, if newer, in slices of gems for speed
+    aria2c_io.puts("#{source}/gems/#{gem_filename}")
+    aria2c_io.flush
+  end.close
+end

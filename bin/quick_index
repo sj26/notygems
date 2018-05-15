@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require "rubygems/package"
+
+# XXX: Gem::Specification#sanitize uses String#to_xs from the builder gem. Use
+# fast_xs instead as a replacement.
+require "fast_xs"
+String.class_eval do
+  alias :to_xs :fast_xs
+end
+
+puts "Build quick index..."
+Dir.chdir(File.join(__dir__, "..", "public")) do
+  Dir.each_child("gems") do |filename| # => "rails-5.0.0.gem"
+    if File.fnmatch("*.gem", filename)
+      path = File.join("gems", filename) # => "gems/rails-5.0.0.gem"
+      puts path
+
+      spec_filename = "#{filename}spec.rz" # => "rails-5.0.0.gemspec.rz"
+      spec_path = "quick/Marshal.4.8/#{spec_filename}" # => "quick/Marshal.4.8/rails-5.0.0.gemspec.rz"
+
+      if File.exist? spec_path
+        puts "  already indexed: #{spec_path}"
+      else
+        begin
+          spec = Gem::Package.new(path).spec
+          spec.loaded_from = filename
+          spec.abbreviate
+          spec.sanitize
+
+          File.binwrite(spec_path, Gem.deflate(Marshal.dump(spec)))
+          puts "  indexed: #{spec_path}"
+        rescue
+          puts "  error: #{$!.class}: #{$!}"
+        end
+      end
+    end
+  end
+end
+puts "Done!"

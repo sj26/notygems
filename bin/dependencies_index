@@ -36,13 +36,17 @@ Dir.chdir(File.join(__dir__, "..", "public")) do
                  []
                end
 
-        if deps.find { |dep| dep[:name] == spec.name && dep[:number] == spec.version && dep[:platform] == spec.platform }
+        dep_name = spec.name.to_s
+        dep_number = spec.version.to_s
+        dep_platform = spec.platform.to_s
+
+        if deps.find { |dep| dep[:name] == dep_name && dep[:number] == dep_number && dep[:platform] == dep_platform }
           puts "  already indexed: #{deps_path}"
         else
           deps << {
-            name: spec.name.to_s,
-            number: spec.version.to_s,
-            platform: spec.platform.to_s,
+            name: dep_name,
+            number: dep_number,
+            platform: dep_platform,
             dependencies: spec.dependencies.map { |dependency|
               [dependency.name.to_s, *dependency.requirements_list.map(&:to_s)]
             },

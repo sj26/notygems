@@ -29,7 +29,7 @@ The application is built with [Ruby](http://ruby-lang.org) and [Sinatra](http://
 # Install dependencies
 bundle
 
-# Run the http server, http://localhost:3000 by default
+# Run the http server, http://localhost:9292 by default
 rackup
 ```
 
@@ -40,13 +40,13 @@ Note that it expects static files from the public directory to be served directl
 Install from your mirror using:
 
 ```
-gem install --clear-sources --source http://localhost:3000 GEM...
+gem install --clear-sources --source http://localhost:9292 GEM...
 ```
 
 With bundler you can tell it to use this as a mirror for everything:
 
 ```
-bundle config --global mirror.https://rubygems.org http://localhost:3000
+bundle config --global mirror.https://rubygems.org http://localhost:9292
 ```
 
 Then use bundler as usual:

@@ -34,3 +34,29 @@ rackup
 ```
 
 Note that it expects static files from the public directory to be served directly. You can add Rack::File or something if your server doesn't handle that.
+
+## Using
+
+Install from your mirror using:
+
+```
+gem install --clear-sources --source http://localhost:3000 GEM...
+```
+
+With bundler you can tell it to use this as a mirror for everything:
+
+```
+bundle config --global mirror.https://rubygems.org http://localhost:3000
+```
+
+Then use bundler as usual:
+
+```
+bundle install
+```
+
+Don't forget to remove it afterward:
+
+```
+bundle config --delete mirror.https://rubygems.org
+```

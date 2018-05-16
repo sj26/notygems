@@ -4,7 +4,7 @@
 # 
 # Creates files like:
 #
-#   public/dependencies/Marshal.4.8/rails.gemdeps.rz
+#   db/dependencies/rails.gemdeps.rz
 #
 # Which is a Marshal-encoded, deflated array of basic version and dependency info
 # as required by the rubygems/bundler dependency api, similar to the quick index.
@@ -18,17 +18,17 @@ require "rubygems/package"
 require "date"
 
 puts "Build dependencies index..."
-Dir.chdir(File.join(__dir__, "..", "public")) do
-  system "mkdir", "-p", "dependencies/Marshal.4.8" or raise
-  Dir.each_child("quick/Marshal.4.8") do |filename| # => "rails-5.0.0.gemspec.rz"
+Dir.chdir(File.join(__dir__, "..")) do
+  system "mkdir", "-p", "db/dependencies" or raise
+  Dir.each_child("public/quick/Marshal.4.8") do |filename| # => "rails-5.0.0.gemspec.rz"
     if File.fnmatch("*.gemspec.rz", filename)
-      path = File.join("quick/Marshal.4.8", filename) # => "quick/Marshal.4.8/rails-5.0.0.gemspec.rz"
+      path = File.join("public/quick/Marshal.4.8", filename) # => "public/quick/Marshal.4.8/rails-5.0.0.gemspec.rz"
       puts path
       begin
         spec = Marshal.load(Gem.inflate(File.binread(path))) # => #<Gem::Specification name="rails" version="5.0.0" platform="ruby" ...>
 
         deps_filename = "#{spec.name}.gemdeps.rz" # => "rails.gemdeps.rz"
-        deps_path = "dependencies/Marshal.4.8/#{deps_filename}" # => "dependencies/Marshal.4.8/rails.gemdeps.rz"
+        deps_path = "db/dependencies/#{deps_filename}" # => "db/dependencies/rails.gemdeps.rz"
 
         deps = if File.exist? deps_path
                  Marshal.load(Gem.inflate(File.binread(deps_path)))

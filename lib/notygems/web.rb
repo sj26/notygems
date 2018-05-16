@@ -28,7 +28,7 @@ module Notygems
 
       # We've generate an index of dependencies, marshalled like the quick index
       deps = names.map do |name|
-        File.join("public", "dependencies", "Marshal.4.8", "#{name}.gemdeps.rz")
+        File.join("db", "dependencies", "#{name}.gemdeps.rz")
       end.select do |path|
         File.exist? path
       end.flat_map do |path|

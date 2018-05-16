@@ -10,6 +10,9 @@
 # Ignore machine-specific env
 /.env
 
+# Ignore database files
+/db
+
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
@@ -22,6 +25,5 @@
 /public/specs.4.8.gz
 /public/latest_specs.4.8.gz
 /public/prerelease_specs.4.8.gz
-/public/dependencies
 /public/quick
 /public/gems

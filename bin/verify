@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+# Iterate all gem packages and make sure the md5 matches upstream and that the
+# gem still exists (hasn't been removed)
+
+puts "Verifying all gems..."
+Dir.chdir(File.join(__dir__, "..")) do
+  dir = "public/gems"
+  Dir.each_child(dir) do |file|
+    next if file.casecmp(ENV["SKIP_UNTIL"]) < 0 if ENV["SKIP_UNTIL"]
+    path = "#{dir}/#{file}"
+    puts path
+    response = HTTP.head("https://rubygems.org/gems/#{file}")
+    if response.status.success? && response.headers.include?("ETag")
+      expected_md5 = response.headers["ETag"][/"(.*)"/, 1]
+      actual_md5 = Digest::MD5.file(path).hexdigest
+      if actual_md5.casecmp(expected_md5) == 0
+        puts "  ✔ actual=#{actual_md5} expected=#{expected_md5}"
+      else
+        puts "  ⨉ actual=#{actual_md5} expected=#{expected_md5}"
+        File.unlink("gems/#{file}")
+        puts "    removed #{file}"
+        system "wget", "--quiet", "--directory-prefix", dir, "https://rubygems.org/gems/#{file}"
+        puts "    downloaded replacement"
+      end
+    elsif response.status.not_found? || response.status.forbidden?
+      puts "  * gem yanked"
+      File.unlink("gems/#{file}")
+      puts "    removed #{file}"
+    else
+      puts "  ! request failed: #{response.inspect}"
+      exit 1
+    end
+  end
+end
+puts "Done!"

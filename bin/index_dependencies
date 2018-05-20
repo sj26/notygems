@@ -47,7 +47,7 @@ Dir.chdir(File.join(__dir__, "..")) do
             name: dep_name,
             number: dep_number,
             platform: dep_platform,
-            dependencies: spec.dependencies.map { |dependency|
+            dependencies: spec.dependencies.reject { |d| d.type == :development }.map { |dependency|
               [dependency.name.to_s, *dependency.requirements_list.map(&:to_s)]
             },
           }

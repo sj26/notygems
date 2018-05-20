@@ -1,0 +1,36 @@
+{
+  "name": "notygems",
+  "version": "0.1.0",
+  "homepage": "http://gems.railscamp.local",
+  "license": "MIT",
+  "dependencies": {
+    "autoprefixer": "^8.5.0",
+    "babel-preset-react-app": "^3.1.1",
+    "parcel-bundler": "latest",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
+  },
+  "scripts": {
+    "start": "parcel start app/index.html --out-dir public/ --public-url /",
+    "watch": "parcel watch app/index.html --out-dir public/ --public-url /",
+    "build": "parcel build app/index.html --out-dir public/ --public-url /"
+  },
+  "babel": {
+    "presets": ["react-app"],
+    "plugins": ["transform-class-properties"]
+  },
+  "postcss": {
+    "modules": false,
+    "plugins": {
+      "autoprefixer": {
+        "browsers": [
+          ">1%",
+          "last 4 versions",
+          "Firefox ESR",
+          "not ie < 9"
+        ],
+        "flexbox": "no-2009"
+      }
+    }
+  }
+}

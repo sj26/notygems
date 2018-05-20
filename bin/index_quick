@@ -11,6 +11,7 @@ end
 
 puts "Build quick index..."
 Dir.chdir(File.join(__dir__, "..", "public")) do
+  system "mkdir", "-p", "quick/Marshal.4.8" or raise $?
   Dir.each_child("gems") do |filename| # => "rails-5.0.0.gem"
     if File.fnmatch("*.gem", filename)
       path = File.join("gems", filename) # => "gems/rails-5.0.0.gem"

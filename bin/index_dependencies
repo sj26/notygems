@@ -19,7 +19,7 @@ require "date"
 
 puts "Build dependencies index..."
 Dir.chdir(File.join(__dir__, "..")) do
-  system "mkdir", "-p", "db/dependencies" or raise
+  system "mkdir", "-p", "db/dependencies" or raise $?
   Dir.each_child("public/quick/Marshal.4.8") do |filename| # => "rails-5.0.0.gemspec.rz"
     if File.fnmatch("*.gemspec.rz", filename)
       path = File.join("public/quick/Marshal.4.8", filename) # => "public/quick/Marshal.4.8/rails-5.0.0.gemspec.rz"

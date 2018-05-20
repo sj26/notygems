@@ -6,9 +6,11 @@
   "dependencies": {
     "autoprefixer": "^8.5.0",
     "babel-preset-react-app": "^3.1.1",
+    "bootstrap": "^4.1.1",
     "parcel-bundler": "latest",
     "react": "^16.3.2",
-    "react-dom": "^16.3.2"
+    "react-dom": "^16.3.2",
+    "reactstrap": "^6.0.1"
   },
   "scripts": {
     "start": "parcel start app/index.html --out-dir public/ --public-url /",
@@ -16,8 +18,12 @@
     "build": "parcel build app/index.html --out-dir public/ --public-url /"
   },
   "babel": {
-    "presets": ["react-app"],
-    "plugins": ["transform-class-properties"]
+    "presets": [
+      "react-app"
+    ],
+    "plugins": [
+      "transform-class-properties"
+    ]
   },
   "postcss": {
     "modules": false,

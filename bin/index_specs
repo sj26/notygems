@@ -1,0 +1,61 @@
+#!/usr/bin/env ruby
+
+require "rubygems/package"
+
+# XXX: Gem::Specification#sanitize uses String#to_xs from the builder gem. Use
+# fast_xs instead as a replacement.
+require "fast_xs"
+String.class_eval do
+  alias :to_xs :fast_xs
+end
+
+print "Build specs index"
+Dir.chdir(File.join(__dir__, "..")) do
+  specs = []
+  prerelease_specs = []
+  latest_specs = {}
+
+  Dir.each_child("public/gems") do |filename| # => "rails-5.0.0.gem"
+    if File.fnmatch("*.gem", filename)
+      path = File.join("public/gems", filename) # => "gems/rails-5.0.0.gem"
+
+      begin
+        spec = Gem::Package.new(path).spec
+
+        name = spec.name
+        version = spec.version
+        platform = spec.original_platform
+
+        # win32-api-1.0.4-x86-mswin32-60
+        next unless platform.is_a? String
+
+        if version.prerelease?
+          prerelease_specs << [name, version, platform]
+        else
+          specs << [name, version, platform]
+          # create or replace with newer versions
+          if !latest_specs.key?(name) || latest_specs[name][0][1] < version
+            latest_specs[name] = [[name, version, platform]]
+          elsif latest_specs[name][0][1] == version # add to same version
+            latest_specs[name] << [name, version, platform]
+          end
+        end
+        print "."
+      rescue
+        puts
+        puts "  error: #{$!.class}: #{$!}"
+      end
+    end
+  end
+  puts
+
+  puts "Writing specs..."
+  File.binwrite("public/specs.4.8.gz", Zlib.gzip(Marshal.dump(specs)))
+
+  puts "Writing prerelease specs..."
+  File.binwrite("public/prerelease_specs.4.8.gz", Zlib.gzip(Marshal.dump(prerelease_specs)))
+
+  puts "Writing latest specs..."
+  File.binwrite("public/latest_specs.4.8.gz", Zlib.gzip(Marshal.dump(latest_specs.values.flatten(1))))
+end
+puts "Done!"

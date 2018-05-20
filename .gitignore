@@ -4,26 +4,22 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
-# Ignore bundler config.
+# Ruby dependencies
 /.bundle
+/vendor/bundle
+
+# Node dependencies
+/.cache
+/node_modules
 
 # Ignore machine-specific env
 /.env
 
-# Ignore database files
+# Ignore generated files
 /db
-
-# Ignore all logfiles and tempfiles.
 /log/*.log
+/passenger.*
 /tmp
 
-# Ignore bundled gems
-/vendor/bundle
-
-# Ignore gems and metadata
-/public/Marshal.4.8.Z
-/public/specs.4.8.gz
-/public/latest_specs.4.8.gz
-/public/prerelease_specs.4.8.gz
-/public/quick
-/public/gems
+# Ignore gems, metadata, frontend assets
+/public

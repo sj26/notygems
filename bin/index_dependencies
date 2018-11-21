@@ -23,7 +23,6 @@ Dir.chdir(File.join(__dir__, "..")) do
   Dir.each_child("public/quick/Marshal.4.8") do |filename| # => "rails-5.0.0.gemspec.rz"
     if File.fnmatch("*.gemspec.rz", filename)
       path = File.join("public/quick/Marshal.4.8", filename) # => "public/quick/Marshal.4.8/rails-5.0.0.gemspec.rz"
-      puts path
       begin
         spec = Marshal.load(Gem.inflate(File.binread(path))) # => #<Gem::Specification name="rails" version="5.0.0" platform="ruby" ...>
 
@@ -40,9 +39,7 @@ Dir.chdir(File.join(__dir__, "..")) do
         dep_number = spec.version.to_s
         dep_platform = spec.platform.to_s
 
-        if deps.find { |dep| dep[:name] == dep_name && dep[:number] == dep_number && dep[:platform] == dep_platform }
-          puts "  already indexed: #{deps_path}"
-        else
+        unless deps.find { |dep| dep[:name] == dep_name && dep[:number] == dep_number && dep[:platform] == dep_platform }
           deps << {
             name: dep_name,
             number: dep_number,
@@ -52,10 +49,10 @@ Dir.chdir(File.join(__dir__, "..")) do
             },
           }
           File.binwrite(deps_path, Gem.deflate(Marshal.dump(deps)))
-          puts "  indexed: #{deps_path}"
+          puts "indexed #{filename}"
         end
       rescue
-        puts "  error: #{$!.class}: #{$!}"
+        puts "failed indexing #{filename}", "  #{$!.class}: #{$!}"
       end
     end
   end

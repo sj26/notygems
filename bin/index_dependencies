@@ -30,7 +30,13 @@ Dir.chdir(File.join(__dir__, "..")) do
         deps_path = "db/dependencies/#{deps_filename}" # => "db/dependencies/rails.gemdeps.rz"
 
         deps = if File.exist? deps_path
-                 Marshal.load(Gem.inflate(File.binread(deps_path)))
+                 begin
+                   Marshal.load(Gem.inflate(File.binread(deps_path)))
+                 rescue
+                   puts "failed loading #{deps_filename} (removed):", "  #{$!.class.name}: #{$!}"
+                   File.unlink(deps_path)
+                   []
+                 end
                else
                  []
                end

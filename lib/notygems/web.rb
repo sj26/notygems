@@ -25,8 +25,8 @@ module Notygems
     # `gem install ...` asks this for gem versions and their dependencies
     get %r{/api/v1/dependencies(?:\.(?<format>json|marshal))?}, provides: [:marshal, :json] do
       names = params.fetch(:gems, "").split(",")
-      unless names.all? { |name| name.match?(NAME_PATTERN) }
-        halt :unprocessible_entity # no funny stuff
+      if (bad_names = names.grep_v(NAME_PATTERN)).any?
+        halt 422, {"Content-Type" => "text/plain"}, "Invalid gem names: #{bad_names.inspect}"
       end
 
       # Allow format extension to override content type

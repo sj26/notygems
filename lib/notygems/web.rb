@@ -9,6 +9,13 @@ module Notygems
 
     mime_type "marshal", "application/x-ruby-marshal"
 
+    # `bundle update` etc use this for a fill list of available gem versions
+    # and requires a valid etag which is expected to be an md5, precomputed here
+    get "/versions" do
+      etag File.read("db/versions.md5").chomp
+      send_file "db/versions", type: "text/plain"
+    end
+
     # `gem install ...` hits this to see if we have an API, so just say "yes"
     # really quickly with a successful response
     head "/api/v1/dependencies" do

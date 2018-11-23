@@ -7,6 +7,7 @@
 # urls to download, and it will conditionally get over several connections.
 #
 
+require "digest"
 require "zlib"
 
 def gem_filename_for(name, version, platform=Gem::Platform::RUBY)
@@ -20,6 +21,11 @@ end
 source = "https://rubygems.org"
 
 Dir.chdir(File.join(__dir__, "..", "public")) do
+  # Full list of all versions used by latest bundler apis
+  puts "downloading versions file"
+  system "wget", "-N", "#{source}/versions"
+  File.write("versions.md5", Digest::MD5.file("versions").hexdigest)
+
   # Prioritised list of specs files:
   #
   # 1. latest_specs -- latest versions of every gem

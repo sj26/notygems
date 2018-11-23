@@ -29,7 +29,7 @@ Dir.chdir(File.join(__dir__, "..")) do
       end
     elsif response.status.not_found? || response.status.forbidden?
       puts "  * gem yanked"
-      File.unlink("gems/#{file}")
+      File.unlink(File.join(dir, file))
       puts "    removed #{file}"
     else
       puts "  ! request failed: #{response.inspect}"

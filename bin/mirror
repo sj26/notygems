@@ -32,6 +32,7 @@ Dir.chdir(File.join(__dir__, "..", "public")) do
   # 2. specs -- every non-prerelease version of every gem
   # 3. prerelease_specs -- every prerelease version of every gem
   #
+  puts "downloading specs"
   ["latest_specs", "specs", "prerelease_specs"].tap do |specs_files|
     # Update specs files
     system "wget", "-N", *specs_files.map { |file| "#{source}/#{file}.4.8.gz" }
@@ -43,15 +44,10 @@ Dir.chdir(File.join(__dir__, "..", "public")) do
     gem_filename_for(gem_name, gem_version, gem_platform)
   end.lazy.reject do |gem_filename|
     # Skip already-downloaded gems early
-    File.exist?("gems/#{gem_filename}").tap do |reject|
-      if reject
-        puts gem_filename, "  already downloaded"
-      else
-        puts gem_filename, "  downloading"
-      end
-    end
+    File.exist?("gems/#{gem_filename}")
   end.lazy.each.with_object(IO.popen(["aria2c", "--force-sequential", "--max-concurrent-downloads=5", "--max-connection-per-server=5", "--continue", "--dir=gems", "--remote-time", "--conditional-get", "--allow-overwrite", "--deferred-input", "--input-file=-"], "w")) do |gem_filename, aria2c_io|
     # Download into gems/, if newer, in slices of gems for speed
+    puts "downloading #{gem_filename}"
     aria2c_io.puts("#{source}/gems/#{gem_filename}")
     aria2c_io.flush
   end.close

@@ -3,6 +3,10 @@
 # Iterate all gem packages and make sure the md5 matches upstream and that the
 # gem still exists (hasn't been removed)
 
+require "http"
+
+http = HTTP.persistent("https://rubygems.org")
+
 puts "Verifying all gems..."
 Dir.chdir(File.join(__dir__, "..")) do
   dir = "public/gems"
@@ -10,7 +14,7 @@ Dir.chdir(File.join(__dir__, "..")) do
     next if file.casecmp(ENV["SKIP_UNTIL"]) < 0 if ENV["SKIP_UNTIL"]
     path = "#{dir}/#{file}"
     puts path
-    response = HTTP.head("https://rubygems.org/gems/#{file}")
+    response = http.head("/gems/#{file}")
     if response.status.success? && response.headers.include?("ETag")
       expected_md5 = response.headers["ETag"][/"(.*)"/, 1]
       actual_md5 = Digest::MD5.file(path).hexdigest

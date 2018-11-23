@@ -4,5 +4,5 @@ require "rack/sendfile"
 $: << File.join(__dir__, "lib")
 require "notygems"
 
-use Rack::Sendfile
+#use Rack::Sendfile
 run Notygems::Web

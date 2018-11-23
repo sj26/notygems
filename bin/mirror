@@ -20,12 +20,14 @@ end
 
 source = "https://rubygems.org"
 
-Dir.chdir(File.join(__dir__, "..", "public")) do
+Dir.chdir(File.join(__dir__, "..", "db")) do
   # Full list of all versions used by latest bundler apis
   puts "downloading versions file"
   system "wget", "-N", "#{source}/versions"
   File.write("versions.md5", Digest::MD5.file("versions").hexdigest)
+end
 
+Dir.chdir(File.join(__dir__, "..", "public")) do
   # Prioritised list of specs files:
   #
   # 1. latest_specs -- latest versions of every gem

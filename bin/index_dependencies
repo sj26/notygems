@@ -41,7 +41,8 @@ Dir.chdir(File.join(__dir__, "..")) do
                  []
                end
 
-        dep_name = spec.name.to_s
+        # memcache-client-1.6.3.gem has a dependency name wrapped in an Array
+        dep_name = [*spec.name].to_s
         dep_number = spec.version.to_s
         dep_platform = spec.platform.to_s
 

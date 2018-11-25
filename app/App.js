@@ -10,14 +10,14 @@ class App extends Component {
           <div className="justify-content-sm-center row">
             <div className="col-sm-8">
               <Header title="Rubygems" />
-              <p>To install a gem from here:</p>
+              <p>To install a single gem from here:</p>
               <pre>gem install --clear-sources --source http://gems.railscamp.local GEM</pre>
-              <p>Or tell bundler to use this as a mirror:</p>
+              <p>Or tell rubygems to always use this mirror by adding sources to your <code>~/.gemrc</code></p>
+              <pre>:sources: ["http://gems.railscamp.local"]</pre>
+              <p>but remember to remove this line when you get home.</p>
+              <p>Or tell bundler to always use this mirror:</p>
               <pre>bundle config --global mirror.https://rubygems.org http://gems.railscamp.local</pre>
-              <p>Or add this as the source in your Gemfile:</p>
-              <pre>source "http://gems.railscamp.local"</pre>
-              <h2>When you get home</h2>
-              <p>Bundler will continue to use this mirror until you tell it to stop. To fix it, open <code>~/.bundle/config</code> in your favourite editor and remove the line which contains <code>railscamp</code>. Or you can run the following command:</p>
+              <p>but make sure you tell it to stop when you get home by deleting the mirror from <code>~/.bundle/config</code>, or run:</p>
               <pre>bundle config --delete mirror.https://rubygems.org</pre>
             </div>
           </div>
